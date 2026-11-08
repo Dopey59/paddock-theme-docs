@@ -1,0 +1,10 @@
+Handle,Title,Body (HTML),Vendor,Product Category,Type,Tags,Published,Option1 Name,Option1 Value,Variant SKU,Variant Price,Variant Inventory Policy,Variant Fulfillment Service,Variant Requires Shipping,Variant Taxable,Image Src,Status
+ceramic-brake-pads-front,Ceramic brake pads (front),<p>Low-dust ceramic compound.</p>,Paddock Parts,Vehicles & Parts > Vehicle Parts & Accessories,Brake pads,"Brakes, ceramic",TRUE,Title,Default Title,PAD-CER-F-01,89.00,deny,manual,TRUE,TRUE,,active
+drilled-brake-rotor-pair,Drilled brake rotors (pair),<p>Cross-drilled and slotted.</p>,Paddock Parts,Vehicles & Parts > Vehicle Parts & Accessories,Brake rotors,"Brakes, fit:Audi|R8|2010-2012",TRUE,Side,Front,ROT-DRL-F,249.00,deny,manual,TRUE,TRUE,,active
+drilled-brake-rotor-pair,,,,,,,,,Rear,ROT-DRL-R,219.00,deny,manual,TRUE,TRUE,,
+golf-r-sport-brake-pads,Sport brake pads for Golf R,<p>Fast road and track days.</p>,Paddock Parts,Vehicles & Parts > Vehicle Parts & Accessories,Brake pads,Brakes,TRUE,Title,Default Title,PAD-GOLF-R-01,119.00,deny,manual,TRUE,TRUE,,active
+cold-air-intake-kit,Cold air intake kit,<p>Dyno-tested.</p>,Paddock Parts,Vehicles & Parts > Vehicle Parts & Accessories,Intake,"Engine, Intake",TRUE,Title,Default Title,CAI-MUS-50,349.00,deny,manual,TRUE,TRUE,,active
+o-ring-chain-kit-520,O-ring chain kit 520,<p>Chain and sprockets.</p>,Paddock Moto,Vehicles & Parts > Vehicle Parts & Accessories,Drivetrain,"Moto, Chain",TRUE,Title,Default Title,CHN-520-KIT,159.00,deny,manual,TRUE,TRUE,,active
+oil-filter-hf204,Oil filter HF204,<p>OEM-equivalent.</p>,Paddock Moto,Vehicles & Parts > Vehicle Parts & Accessories,Filters,"Moto, Service",TRUE,Title,Default Title,FLT-HF204,12.90,deny,manual,TRUE,TRUE,,active
+all-weather-floor-mats,All-weather floor mats,<p>Trim to fit.</p>,Paddock Parts,Vehicles & Parts > Vehicle Parts & Accessories,Interior,Interior,TRUE,Title,Default Title,MAT-AW-UNI,59.00,deny,manual,TRUE,TRUE,,active
+synthetic-motor-oil-5w30,Synthetic motor oil 5W-30,<p>5 litres.</p>,Paddock Parts,Vehicles & Parts > Vehicle Parts & Accessories,Oil,"Service, Oil",TRUE,Title,Default Title,OIL-5W30-5L,44.00,deny,manual,TRUE,TRUE,,active

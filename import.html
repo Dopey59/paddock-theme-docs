@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Import your fitment data into Paddock · Paddock theme</title>
+<meta name="description" content="Paddock Shopify theme documentation: vehicle fitment, garage, import, sections, FAQ and support.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header><div class="bar"><a class="brand" href="index.html">PADDOCK<span>.</span></a><nav aria-label="Documentation"><ul><li><a href="index.html">Overview</a></li><li><a href="setup.html">Store setup</a></li><li><a href="import.html" aria-current="page">Import fitment data</a></li><li><a href="sections.html">Sections</a></li><li><a href="faq.html">FAQ</a></li><li><a href="support.html">Support</a></li><li><a href="changelog.html">Release notes</a></li></ul></nav></div></header>
+<main id="content">
+<h1>Import your fitment data into Paddock</h1>
+<p>You already have your fitment data: a spreadsheet, a TecDoc export or an ACES file. This guide shows how to load it into Paddock <strong>without a developer</strong>, in three steps:</p>
+<ol>
+<li>Put your data into one simple spreadsheet, the <strong>fitment sheet</strong>.</li>
+<li>Open <strong><a href="tools/converter.html"><code>converter.html</code></a></strong> in your browser and drop the sheet. It checks every row and makes the import files.</li>
+<li>Import those files into Shopify.</li>
+</ol>
+<p>Do the theme setup first (the Vehicle metaobject definition and the <code>custom.fitment</code> product metafield): see <a href="setup.html">MERCHANT-SETUP-GUIDE.md</a>, sections 1 and 2.</p>
+<h2 id="what-s-in-this-folder">What's in this folder</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="tools/fitment-sheet-template.csv"><code>fitment-sheet-template.csv</code></a></td>
+<td>The empty fitment sheet. Open it in Excel, Numbers or Google Sheets</td>
+</tr>
+<tr>
+<td><a href="tools/fitment-sheet-example.csv"><code>fitment-sheet-example.csv</code></a></td>
+<td>A filled example (cars, motorcycles, universal parts, SKUs)</td>
+</tr>
+<tr>
+<td><a href="tools/example-shopify-products-export.csv"><code>example-shopify-products-export.csv</code></a></td>
+<td>A small Shopify product export that goes with the example</td>
+</tr>
+<tr>
+<td><a href="tools/converter.html"><code>converter.html</code></a></td>
+<td>The converter. Double-click it: it opens in your browser, works offline and never sends your files anywhere</td>
+</tr>
+<tr>
+<td><a href="tools/example-output/"><code>example-output/</code></a></td>
+<td>What the converter produces from the example</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-fill-in-the-fitment-sheet">1. Fill in the fitment sheet</h2>
+<p><strong>One row = one product × one vehicle.</strong> A part that fits three vehicles takes three rows.</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Required</th>
+<th>Example</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>product_handle</code></td>
+<td>Yes, or <code>sku</code></td>
+<td><code>ceramic-brake-pads-front</code></td>
+<td>The product's URL handle (Shopify admin → product → Search engine listing)</td>
+</tr>
+<tr>
+<td><code>sku</code></td>
+<td>Yes, or <code>product_handle</code></td>
+<td><code>PAD-GOLF-R-01</code></td>
+<td>Any variant SKU of the product. Needs your product export in the converter (step 2)</td>
+</tr>
+<tr>
+<td><code>make</code></td>
+<td>Yes</td>
+<td><code>Audi</code></td>
+<td><code>Universal</code> for a part that fits every vehicle (the other columns can stay empty)</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>Yes</td>
+<td><code>R8</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>year_from</code></td>
+<td>Yes</td>
+<td><code>2016</code></td>
+<td>First model year, four digits</td>
+</tr>
+<tr>
+<td><code>year_to</code></td>
+<td>No</td>
+<td><code>2023</code></td>
+<td>Last model year. <strong>Empty = still produced</strong></td>
+</tr>
+<tr>
+<td><code>engine</code></td>
+<td>No</td>
+<td><code>5.2 V10</code></td>
+<td><strong>Empty = fits every engine</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Example:</p>
+<pre><code class="language-csv">product_handle,sku,make,model,year_from,year_to,engine
+ceramic-brake-pads-front,,Audi,R8,2016,2023,5.2 V10
+,PAD-GOLF-R-01,Volkswagen,Golf R,2014,2021,2.0 TSI
+o-ring-chain-kit-520,,Yamaha,MT-07,2014,2024,
+all-weather-floor-mats,,Universal,,,,
+</code></pre>
+<p>Good to know:
+- <strong>Use year ranges</strong>, not one row per year: Shopify allows at most 128 vehicles per product.
+- <strong>Always spell makes and models the same way</strong> ("Volkswagen" everywhere, never "VW" here and "Volkswagen" there). The garage compares them exactly; the converter warns you when it sees two spellings.
+- Commas or semicolons as separators both work (French Excel uses semicolons). Column names in French are accepted too (<code>marque</code>, <code>modèle</code>, <code>année début</code>…).
+- Excel: <strong>File → Save as → CSV</strong>. The converter does not read <code>.xlsx</code> files.
+- <strong>For each product in your sheet, list all its vehicles.</strong> The import replaces the product's fitment with what the sheet says. Products not in the sheet are not touched, so you can import in batches (for example one brand at a time).</p>
+<h2 id="2-run-the-converter">2. Run the converter</h2>
+<ol>
+<li>Double-click <a href="tools/converter.html"><code>converter.html</code></a>. It opens in your browser.</li>
+<li>Drop your fitment sheet in box 1.</li>
+<li>Optional: drop your Shopify product export in box 2 (Shopify admin → Products → Export → All products → CSV for Excel). It is needed if your sheet uses SKUs, it checks that every handle exists, and it unlocks the "tags" file (no app needed, see below).</li>
+<li>Read the result:
+   - <strong>Errors</strong> (red), with the row number of your spreadsheet: a year that isn't a year, <code>year_to</code> before <code>year_from</code>, an empty make or model, an unknown handle or SKU, a missing column, more than 128 vehicles on one product. A product with an error is left out of the files until you fix the sheet and drop it again; every other product is converted.
+   - <strong>Warnings</strong>: duplicate rows (kept once), two spellings of the same make or model, a product marked Universal that also lists vehicles.</li>
+<li>Download the files.</li>
+</ol>
+<p>The converter gives each vehicle a stable, readable handle, such as <code>audi-r8-2016-2023-5-2-v10</code>, <code>ford-mustang-2018-present-5-0-v8</code> or <code>universal</code>. The same vehicle always gets the same handle, so you can run the converter again on an updated sheet: existing vehicles are updated, not duplicated.</p>
+<h2 id="3-import-into-shopify">3. Import into Shopify</h2>
+<p>Two things go into Shopify: the <strong>vehicles</strong> (Content → Metaobjects → Vehicle) and, for each product, the link to its vehicles (the product's <strong>Fitment</strong> field). Shopify's own product import does the second part; the first part needs Matrixify or a few minutes by hand.</p>
+<h3 id="step-a-create-the-vehicles">Step A: create the vehicles</h3>
+<ul>
+<li><strong>A few dozen vehicles: by hand, no app.</strong> Content → Metaobjects → Vehicle → Add entry, once per line of <code>vehicles-list.csv</code>. Type the <strong>handle</strong> shown in that file (the field at the bottom of the entry), so the product import can find each vehicle.</li>
+<li><strong>Many vehicles: with <a href="https://apps.shopify.com/excel-export-import">Matrixify</a></strong> (free plan for small files, paid plans for large catalogs). Matrixify → Import → upload <code>matrixify-metaobjects-vehicles.csv</code> → Import. Keep the file name: Matrixify reads "metaobjects" in it.</li>
+</ul>
+<p>If vehicles already exist in your store under other handles, rename their handles to the ones of <code>vehicles-list.csv</code>, or the import creates them a second time.</p>
+<h3 id="step-b-link-products-to-vehicles-no-app-needed">Step B: link products to vehicles (no app needed)</h3>
+<p>Drop your product export in the converter (box 2): it makes <code>shopify-products-fitment.csv</code>.</p>
+<ol>
+<li>Shopify admin → <strong>Products</strong> → <strong>Import</strong> → choose <code>shopify-products-fitment.csv</code>.</li>
+<li>Tick <strong>Overwrite products with matching handles</strong>. Untick "Publish new products to all sales channels".</li>
+<li>Upload and preview → <strong>Import products</strong>. Shopify emails you a summary.</li>
+</ol>
+<p>Only the columns of the file change: price, SKU, description, images, tags and everything else stay as they are (verified on a dev store). The Fitment column lists the vehicle handles separated by <code>;</code> (semicolon and space), the format Shopify expects for this kind of field. If the summary says <strong>"Value requires that you select a metaobject"</strong>, a vehicle of that row does not exist yet with that handle: do step A first, or fix the handle.</p>
+<p>With Matrixify you can also import <code>matrixify-products-fitment.csv</code> instead (after the vehicles).</p>
+<h3 id="alternative-without-vehicles-in-the-fitment-field-tags">Alternative without vehicles in the Fitment field: tags</h3>
+<p>If you also dropped your product export, the converter makes <code>shopify-products-fit-tags.csv</code>: your export with one tag per vehicle added to each product, such as <code>fit:Audi|R8|2016-2023|5.2 V10</code> or <code>fit:Universal</code>. Your other tags are kept; old <code>fit:</code> tags are replaced.</p>
+<ol>
+<li>Shopify admin → <strong>Products</strong> → <strong>Import</strong> → choose the file → tick <strong>Overwrite products with matching handles</strong> → Upload and preview → Import.</li>
+<li>The fitment badges on product cards, the "Fits your…" panel on product pages and the cart then use these tags.</li>
+</ol>
+<p><strong>Limit of the tags route:</strong> the garage's vehicle list (Year → Make → Model → Engine) reads the <strong>Vehicle entries</strong>, not the tags, and the fitment table on the product page lists only the vehicles of the Fitment field. Create the vehicles too (step A). Tags are best for adding a vehicle quickly to a few products.</p>
+<p>You can also type a <code>fit:</code> tag by hand on a product to add one vehicle quickly. Format: <code>fit:Make|Model|Years|Engine</code>. Years: <code>2017-2023</code>, <code>2017</code> (one year), <code>2017-</code> (still produced) or empty (every year). Engine is optional. Tags and the Fitment field are merged.</p>
+<h2 id="coming-from-tecdoc-europe">Coming from TecDoc (Europe)</h2>
+<p>TecDoc (TecAlliance) links each article to vehicle types (KType for cars, motorcycle types for bikes). Export the article linkages as a flat table (your TecDoc tool, catalogue software or data provider can export Excel or CSV) and map the columns:</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>TecDoc column</th>
+<th>Fitment sheet column</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Article number (with your brand)</td>
+<td><code>sku</code></td>
+<td>Must match a variant SKU in Shopify</td>
+</tr>
+<tr>
+<td>Vehicle manufacturer</td>
+<td><code>make</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Model series</td>
+<td><code>model</code></td>
+<td>Choose one way and keep it: with or without the chassis code ("Golf VII" or "Golf VII (5G1, BQ1)")</td>
+</tr>
+<tr>
+<td>Construction year from (YYYYMM)</td>
+<td><code>year_from</code></td>
+<td>Keep the first four digits: <code>201304</code> → <code>2013</code></td>
+</tr>
+<tr>
+<td>Construction year to (YYYYMM)</td>
+<td><code>year_to</code></td>
+<td>Same; empty when still produced</td>
+</tr>
+<tr>
+<td>Type / engine description (for example "2.0 GTI", kW, cc)</td>
+<td><code>engine</code></td>
+<td>Optional. Leave it empty if the part fits all engines of that model</td>
+</tr>
+</tbody>
+</table></div>
+<p>The KType ID itself is not needed. Several KTypes often share make, model, years and engine: they become one row (the converter removes duplicates). TecDoc data is licensed by TecAlliance: check that your licence lets you display it in your store.</p>
+<h2 id="coming-from-aces-pies-north-america">Coming from ACES / PIES (North America)</h2>
+<p>ACES (Auto Care Association) describes fitment; PIES describes the product (part number, brand, descriptions, prices). For Paddock, only ACES fitment matters; PIES goes into your normal Shopify product import.</p>
+<p>ACES XML files use VCdb IDs (BaseVehicle, Make, Model, EngineBase). Ask your PIM, catalog provider or ACES tool for a <strong>flat export with names</strong> (often called "application export" or "ACES flat file"), then map:</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>ACES flat column</th>
+<th>Fitment sheet column</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Part number</td>
+<td><code>sku</code></td>
+<td>Must match a variant SKU in Shopify</td>
+</tr>
+<tr>
+<td>Make</td>
+<td><code>make</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Model (and Submodel if you need it, for example "F-150 XLT")</td>
+<td><code>model</code></td>
+<td>Keep one convention</td>
+</tr>
+<tr>
+<td>Year</td>
+<td><code>year_from</code> <strong>and</strong> <code>year_to</code></td>
+<td>ACES lists one year per row: merge consecutive years into one range (a spreadsheet pivot table helps), or the product may go over 128 vehicles</td>
+</tr>
+<tr>
+<td>Engine (for example "5.0L V8")</td>
+<td><code>engine</code></td>
+<td>Optional</td>
+</tr>
+</tbody>
+</table></div>
+<p>Positions, quantities and notes (front/rear, "with sport package"…) have no column: put them in the product description or as product options.</p>
+<p>A full ACES catalog (tens of thousands of base vehicles) is better served by a dedicated fitment app; Paddock's garage handles several thousand vehicles comfortably.</p>
+<h2 id="what-shopify-imports-natively-research-november-2026">What Shopify imports natively (research, November 2026)</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Answer</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Can the product CSV import set product metafields?</td>
+<td><strong>Yes.</strong> Product CSV import and export support product metafields, one column per metafield, named <code>Name (product.metafields.namespace.key)</code>, for example <code>Fitment (product.metafields.custom.fitment)</code>. Variant metafields are not supported</td>
+<td><a href="https://help.shopify.com/en/manual/products/import-export/using-csv">Shopify Help Center: Using CSV files to import and export products</a></td>
+</tr>
+<tr>
+<td>Which value for a <code>list.metaobject_reference</code> in a product CSV?</td>
+<td><strong>Handles or GIDs, separated by <code>;</code></strong> (Shopify Help Center, metafield table). <strong>Verified on a dev store</strong>: <code>audi-rs3-2017-2024; audi-r8-2017-2024-v10</code> links the product to both vehicles; commas are rejected ("Value requires that you select a metaobject")</td>
+<td><a href="https://shopify.dev/docs/apps/build/metaobjects/data-modeling-with-metafields-and-metaobjects">shopify.dev: Data modeling with metafields and metaobjects</a>, <a href="https://shopify.dev/docs/apps/build/metafields/list-of-data-types">shopify.dev: List of data types</a>, <a href="https://community.shopify.com/t/metaobject-reference-by-handle-instead-of-indecipherable-ids/229861">Shopify Community thread</a></td>
+</tr>
+<tr>
+<td>Can the admin import metaobject entries (vehicles) from a CSV?</td>
+<td><strong>No official documentation found.</strong> Shopify's docs do not describe a CSV import for metaobject entries; the App Store has several apps whose whole purpose is that import</td>
+<td><a href="https://apps.shopify.com/metaobject-csv-import-export">Metaobject CSV Import/Export (App Store)</a>, <a href="https://matrixify.app/tutorials/how-to-bulk-import-shopify-metaobject-entries/">Matrixify: bulk import metaobject entries</a></td>
+</tr>
+<tr>
+<td>Matrixify formats</td>
+<td>Metaobject entries: columns <code>Handle</code>, <code>Command</code>, <code>Definition: Handle</code>, <code>Status</code>, then <strong>one row per field</strong> with <code>Field</code> (the field key) and <code>Value</code>; the rows of one entry repeat its handle. <strong>Verified on a dev store</strong> (a <code>Field: &lt;key&gt;</code> column per field is not recognised). Product metafields: column <code>Metafield: namespace.key [type]</code>; list values separated by commas; metaobject references written <code>vehicle.&lt;handle&gt;</code> (verified on a dev store)</td>
+<td><a href="https://matrixify.app/documentation/metaobjects/">Matrixify: Metaobjects</a>, <a href="https://matrixify.app/documentation/metafields/">Matrixify: Metafields</a>, <a href="https://matrixify.app/whats-new/release-notes/">Matrixify release notes</a></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Conclusion.</strong> Shopify's product import links products to vehicles by handle; it cannot create the vehicles themselves. Hence: vehicles by hand or with Matrixify, product links with the native import (or Matrixify), and <code>fit:</code> tags as a quick extra.</p>
+<p><strong>Verified on the dev store (paddock-dev, November 2026):</strong>
+- The <code>fit:</code> tags route works end to end: <code>fit:Audi|R8|2017-</code> makes a part show "Fits your Audi R8" for a 2020 R8; <code>fit:Audi|R8|2019</code> shows "Doesn't fit" for a 2020; tags add to the Fitment field; <code>fit:Universal</code> shows "Universal fit".
+- The native product import sets the Fitment field from vehicle handles separated by <code>;</code>, and with "Overwrite products with matching handles" it changes only the columns of the file (price, SKU, vendor, description and tags were kept). Commas, GIDs separated by commas and a JSON array were rejected.
+- The admin has <strong>no Import button</strong> for metaobject entries (Content → Metaobjects → Vehicle offers only "Add entry" and "Manage definition"): vehicles must be created by hand or with an app such as Matrixify.
+- Matrixify (Demo plan) imported <code>matrixify-metaobjects-vehicles.csv</code> (2 new Vehicle entries, all fields set, status Active), then <code>matrixify-products-fitment.csv</code> (product updated, Fitment set to both vehicles, vendor and tags kept). The files were sent with Matrixify's "Upload from URL" (merchants usually drop the file in the import box instead).</p>
+</main>
+<footer><div class="bar"><span>Paddock theme for Shopify · Documentation</span><a href="support.html">Contact support</a></div></footer>
+<script src="site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+handle,make,model,year_from,year_to,engine,products
+audi-r8-2007-2015-4-2-v8,Audi,R8,2007,2015,4.2 V8,1
+audi-r8-2016-2023-5-2-v10,Audi,R8,2016,2023,5.2 V10,2
+ford-mustang-2015-2017-5-0-v8,Ford,Mustang,2015,2017,5.0 V8,1
+ford-mustang-2018-present-5-0-v8,Ford,Mustang,2018,,5.0 V8,1
+honda-cbr600rr-2007,Honda,CBR600RR,2007,2007,,1
+kawasaki-z650-2017-present,Kawasaki,Z650,2017,,,1
+lamborghini-huracan-2014-2024,Lamborghini,Huracán,2014,2024,,1
+universal,Universal,All vehicles,1900,,,2
+volkswagen-golf-gti-2013-2020,Volkswagen,Golf GTI,2013,2020,,2
+volkswagen-golf-r-2014-2021-2-0-tsi,Volkswagen,Golf R,2014,2021,2.0 TSI,1
+yamaha-mt-07-2014-2024,Yamaha,MT-07,2014,2024,,2
+yamaha-mt-09-2014-present,Yamaha,MT-09,2014,,,1
+yamaha-tracer-7-2016-present,Yamaha,Tracer 7,2016,,,1

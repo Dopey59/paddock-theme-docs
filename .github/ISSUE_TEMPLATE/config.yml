@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Paddock documentation
+    url: https://dopey59.github.io/paddock-theme-docs/
+    about: Most questions are answered in the setup guide and the FAQ.

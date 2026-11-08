@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frequently asked questions · Paddock theme</title>
+<meta name="description" content="Paddock Shopify theme documentation: vehicle fitment, garage, import, sections, FAQ and support.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header><div class="bar"><a class="brand" href="index.html">PADDOCK<span>.</span></a><nav aria-label="Documentation"><ul><li><a href="index.html">Overview</a></li><li><a href="setup.html">Store setup</a></li><li><a href="import.html">Import fitment data</a></li><li><a href="sections.html">Sections</a></li><li><a href="faq.html" aria-current="page">FAQ</a></li><li><a href="support.html">Support</a></li><li><a href="changelog.html">Release notes</a></li></ul></nav></div></header>
+<main id="content">
+<h1>Frequently asked questions</h1>
+<h2 id="fitment-and-the-garage">Fitment and the garage</h2>
+<p><strong>Do I need a fitment app?</strong>
+No. Vehicle search, the garage, fitment badges and the fitment table are built into the theme. They read Shopify's own metaobjects and metafields, so your data stays in your store and can be exported at any time.</p>
+<p><strong>Does Paddock work for motorcycles?</strong>
+Yes. A vehicle is just a make, a model, a range of years and an optional engine, so cars, motorcycles, trucks or quads all work the same way. The Superbike and Trail styles are made for motorcycle stores.</p>
+<p><strong>How many vehicles can I add?</strong>
+There is no limit in the theme. Several thousand vehicles work without issue. Shopify allows at most 128 vehicles per product: use ranges of years ("2016–2023") rather than one entry per year.</p>
+<p><strong>I already have my data in a spreadsheet, TecDoc or ACES. Do I have to type it in?</strong>
+No. Fill in the fitment sheet and use the offline converter to make the import files. See <a href="import.html">Import your fitment data</a>.</p>
+<p><strong>Why does a product show "Check fitment"?</strong>
+The product has no fitment data yet. Add vehicles to its Fitment metafield, or the "Universal" entry for a part that fits every vehicle. Paddock never shows "Fits your…" without data.</p>
+<p><strong>"Only show parts that fit" only sorts the page I'm on. Why?</strong>
+Add the <strong>Fitment</strong> filter in the free Search &amp; Discovery app (Filters → Add filter → product metafield Fitment). Shopify then filters the whole collection.</p>
+<p><strong>Where is the shopper's garage saved?</strong>
+In the shopper's browser. It follows them on every page and visit on that device, but not across devices.</p>
+<p><strong>Can shoppers search by VIN or licence plate?</strong>
+Not with the theme alone: decoding a VIN or a plate needs a paid external database. Paddock leaves room for an app that does it.</p>
+<h2 id="selling">Selling</h2>
+<p><strong>How do I show star ratings?</strong>
+Install a product review app that fills Shopify's standard product rating metafields (<code>reviews.rating</code> and <code>reviews.rating_count</code>). Most review apps do. The stars then show on product cards and product pages with no setting to change.</p>
+<p><strong>The same-day shipping countdown shows the wrong time.</strong>
+In Theme settings → Shipping, set the time zone of your warehouse (for example <code>America/New_York</code> or <code>Europe/Paris</code>), the cutoff hour and whether you ship on weekends. Only turn the countdown on if orders placed before the cutoff really ship the same day.</p>
+<p><strong>The free shipping bar doesn't show.</strong>
+Enter an amount in Theme settings → Shipping → Free shipping threshold, in your store currency. The bar is hidden for shoppers who pay in another currency, because the amount would not be accurate for them.</p>
+<p><strong>Can I sell to garages and fleets?</strong>
+Yes. With Shopify B2B catalogs (Shopify Plus), the product page shows volume pricing automatically. The Promo banner section is a good place to present a trade account offer.</p>
+<h2 id="design">Design</h2>
+<p><strong>How do I switch between the four styles?</strong>
+Theme settings → Style → <strong>Look</strong> (Racing or Classic) and the color and font settings. To start from another style's full set of colors and fonts, add the theme again and choose that style.</p>
+<p><strong>Can I turn off the animations?</strong>
+Yes: Theme settings → Animations. Visitors whose device asks for reduced motion never see them anyway.</p>
+<p><strong>Which photo should I use for the cinematic tour?</strong>
+A landscape photo at least 2,400 px wide, with the vehicle well lit. Bigger photos allow closer zooms. After changing the photo, select each part in the editor to check that its target is still on the part.</p>
+<p><strong>Is the theme translated?</strong>
+English and French are included, for both the storefront and the theme editor. For other languages, use Shopify's free Translate &amp; Adapt app.</p>
+<h2 id="updates-and-support">Updates and support</h2>
+<p><strong>How do I update Paddock?</strong>
+When a new version is out, Shopify shows it in Online Store → Themes. Updating adds a new copy of the theme with your settings and content; you publish it when you're ready.</p>
+<p><strong>Can I edit the theme code?</strong>
+Yes, but always <strong>duplicate your theme first</strong>, and keep in mind that code edits are lost when you update. For anything beyond small changes, we recommend hiring a Shopify Partner. Custom code is not covered by support.</p>
+<p><strong>What does support cover?</strong>
+Bug fixes and questions about the theme's features and settings. See <a href="support.html">Support</a>.</p>
+</main>
+<footer><div class="bar"><span>Paddock theme for Shopify · Documentation</span><a href="support.html">Contact support</a></div></footer>
+<script src="site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+Handle,Command,Metafield: custom.fitment [list.metaobject_reference]
+ceramic-brake-pads-front,UPDATE,"vehicle.audi-r8-2016-2023-5-2-v10,vehicle.audi-r8-2007-2015-4-2-v8,vehicle.lamborghini-huracan-2014-2024"
+drilled-brake-rotor-pair,UPDATE,"vehicle.audi-r8-2016-2023-5-2-v10,vehicle.volkswagen-golf-gti-2013-2020"
+golf-r-sport-brake-pads,UPDATE,"vehicle.volkswagen-golf-r-2014-2021-2-0-tsi,vehicle.volkswagen-golf-gti-2013-2020"
+cold-air-intake-kit,UPDATE,"vehicle.ford-mustang-2018-present-5-0-v8,vehicle.ford-mustang-2015-2017-5-0-v8"
+o-ring-chain-kit-520,UPDATE,"vehicle.yamaha-mt-07-2014-2024,vehicle.yamaha-tracer-7-2016-present,vehicle.kawasaki-z650-2017-present"
+oil-filter-hf204,UPDATE,"vehicle.yamaha-mt-07-2014-2024,vehicle.yamaha-mt-09-2014-present,vehicle.honda-cbr600rr-2007"
+all-weather-floor-mats,UPDATE,vehicle.universal
+synthetic-motor-oil-5w30,UPDATE,vehicle.universal

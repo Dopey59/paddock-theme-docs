@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paddock — merchant setup guide · Paddock theme</title>
+<meta name="description" content="Paddock Shopify theme documentation: vehicle fitment, garage, import, sections, FAQ and support.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header><div class="bar"><a class="brand" href="index.html">PADDOCK<span>.</span></a><nav aria-label="Documentation"><ul><li><a href="index.html">Overview</a></li><li><a href="setup.html" aria-current="page">Store setup</a></li><li><a href="import.html">Import fitment data</a></li><li><a href="sections.html">Sections</a></li><li><a href="faq.html">FAQ</a></li><li><a href="support.html">Support</a></li><li><a href="changelog.html">Release notes</a></li></ul></nav></div></header>
+<main id="content">
+<h1>Paddock — merchant setup guide</h1>
+<p>This guide shows how to set up your store so that vehicle search, the garage and the fitment badges work. Setup takes about 20 minutes. After that, you only need to add fitment data to your products.</p>
+<p><strong>In short:</strong> one metaobject definition (section 1), one product metafield (section 2) and, recommended, one filter in Search &amp; Discovery (section 4). Everything else is optional.</p>
+<hr />
+<h2 id="1-create-the-vehicle-metaobject-definition">1. Create the "Vehicle" metaobject definition</h2>
+<p>Each vehicle is one metaobject entry: a make, a model, a range of years and, optionally, an engine.</p>
+<ol>
+<li>Shopify admin → <strong>Settings</strong> → <strong>Custom data</strong> → <strong>Metaobjects</strong> → <strong>Add definition</strong>.</li>
+<li>Name: <code>Vehicle</code>. Make sure the <strong>type</strong> is exactly <strong><code>vehicle</code></strong>, because the theme reads <code>shop.metaobjects.vehicle</code>.</li>
+<li>Add these fields with these <strong>exact keys</strong>:</li>
+</ol>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Field name</th>
+<th>Key</th>
+<th>Type</th>
+<th>Required</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Make</td>
+<td><code>make</code></td>
+<td>Single line text</td>
+<td>Yes</td>
+<td>Audi</td>
+</tr>
+<tr>
+<td>Model</td>
+<td><code>model</code></td>
+<td>Single line text</td>
+<td>Yes</td>
+<td>R8</td>
+</tr>
+<tr>
+<td>Year from</td>
+<td><code>year_from</code></td>
+<td>Integer</td>
+<td>Yes</td>
+<td>2016</td>
+</tr>
+<tr>
+<td>Year to</td>
+<td><code>year_to</code></td>
+<td>Integer</td>
+<td>No (empty = still in production)</td>
+<td>2023</td>
+</tr>
+<tr>
+<td>Engine</td>
+<td><code>engine</code></td>
+<td>Single line text</td>
+<td>No (empty = all engines)</td>
+<td>5.2 V10</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="4">
+<li>Under <strong>Access</strong>, turn on <strong>Storefronts</strong> (read access on the storefront). Without it, the garage stays empty.</li>
+<li>Save. Then create your vehicles in <strong>Content</strong> → <strong>Metaobjects</strong> → <strong>Vehicle</strong>, and make sure each entry's status is <strong>Active</strong>.</li>
+</ol>
+<p><strong>Tips</strong>
+- Create one entry per consistent range of years, for example "Audi R8 2016–2023 5.2 V10", rather than one entry per year.
+- <strong>Always spell makes and models the same way</strong> ("Volkswagen" everywhere, never "VW" in some entries and "Volkswagen" in others). The theme compares them exactly.
+- <strong>Universal parts</strong> (floor mats, oil, tools…): create <strong>one</strong> entry with the make <code>Universal</code> (any model and year). Add it to the Fitment field of your universal parts. They get the "Universal fit" badge and stay visible whatever vehicle the shopper has selected.
+- <strong>No limit on the number of vehicles.</strong> The first time a shopper opens the garage, it loads the list in batches of 250. The browser then keeps the list for 6 hours, or until you add or delete a vehicle. Several thousand vehicles work without issue. For tens of thousands (a full ACES-style catalog), a dedicated fitment app is a better fit.</p>
+<h2 id="2-create-the-product-metafields">2. Create the product metafields</h2>
+<p>Shopify admin → <strong>Settings</strong> → <strong>Custom data</strong> → <strong>Products</strong> → <strong>Add definition</strong>. Use the namespace <code>custom</code> and the exact keys below.</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Namespace and key</th>
+<th>Type</th>
+<th>What the theme does with it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fitment</td>
+<td><code>custom.fitment</code></td>
+<td>Metaobject reference → <strong>Vehicle</strong>, <strong>list of entries</strong></td>
+<td>The vehicles the part fits. Drives the badges, the "Fits your…" panel, the fitment table and the "Only show parts that fit" toggle</td>
+</tr>
+<tr>
+<td>Install difficulty</td>
+<td><code>custom.install_difficulty</code></td>
+<td>Integer, from 1 to 5</td>
+<td>Install difficulty meter (1 = easy, 5 = professional)</td>
+</tr>
+<tr>
+<td>Install time</td>
+<td><code>custom.install_time</code></td>
+<td>Single line text</td>
+<td>Install time, shown as written, for example "45 min"</td>
+</tr>
+</tbody>
+</table></div>
+<p>Turn on <strong>Storefronts</strong> access for each one.</p>
+<p>Then, on each product page of the admin (Metafields section at the bottom), select the vehicles the part fits, or the "Universal" entry.</p>
+<blockquote>
+<p>Shopify allows at most <strong>128 vehicles per product</strong>. Use ranges of years ("Audi R8 2016–2023") rather than one entry per year: a part that fits 30 years of models then needs only a few entries.</p>
+</blockquote>
+<p><strong>Bulk import:</strong> already have your fitment data (spreadsheet, TecDoc, ACES)? Don't type it in: fill in one fitment sheet and let the offline converter make the import files. See <a href="import.html">fitment-import/README.md</a>.</p>
+<h2 id="3-theme-settings-customize-theme-settings">3. Theme settings (Customize → Theme settings)</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Setting</th>
+<th>Good to know</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vehicle fitment</td>
+<td>Enable garage and fitment</td>
+<td>Turn it off for a store that doesn't sell by vehicle (tools, for example): everything related to fitment disappears</td>
+</tr>
+<tr>
+<td></td>
+<td>Show fitment badges on product cards</td>
+<td>Shows or hides the badges on product cards. The "Only show parts that fit" toggle still works when they are hidden</td>
+</tr>
+<tr>
+<td></td>
+<td>Add the vehicle to cart lines</td>
+<td>Adds "Vehicle: 2019 Audi R8" to each order line, so you know which vehicle the part was bought for</td>
+</tr>
+<tr>
+<td>Shipping</td>
+<td>Same-day shipping countdown</td>
+<td><strong>Only turn this on if it is true.</strong> Set the cutoff hour, the time zone of your warehouse (for example <code>America/New_York</code>) and whether you ship on weekends</td>
+</tr>
+<tr>
+<td></td>
+<td>Free shipping threshold</td>
+<td>Amount in your store currency. Leave it empty to hide the progress bar. The bar is hidden for shoppers who pay in another currency</td>
+</tr>
+<tr>
+<td>Cart</td>
+<td>Cart type</td>
+<td>Drawer (recommended) or cart page</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-features-that-rely-on-shopify">4. Features that rely on Shopify</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pay in installments</td>
+<td>Turn on <strong>Shop Pay Installments</strong> (Settings → Payments). The "Pay in installments" block then shows on its own</td>
+</tr>
+<tr>
+<td>"Complete the job"</td>
+<td>In the free <strong>Search &amp; Discovery</strong> app → Recommendations → <strong>Complementary products</strong>, choose the related parts for each part (brake pads → rotors, brake fluid…). Without this, the section stays empty</td>
+</tr>
+<tr>
+<td>Collection filters</td>
+<td>In <strong>Search &amp; Discovery</strong> → Filters, add brand, price, availability, product type and any useful metafields</td>
+</tr>
+<tr>
+<td><strong>"Only show parts that fit" across the whole collection</strong> (recommended)</td>
+<td><strong>Search &amp; Discovery</strong> → Filters → <strong>Add filter</strong> → product metafield <strong>Fitment</strong>. That's all. The theme hides this filter from the filter sidebar and drives it with the toggle. Shopify then filters the <strong>whole</strong> collection, with correct result counts and pages. Without this filter, the toggle only sorts the page being shown, and a note in the theme editor reminds you</td>
+</tr>
+<tr>
+<td>Volume pricing (trade customers)</td>
+<td>Shopify B2B catalogs (Shopify Plus): the "Volume pricing" table shows automatically</td>
+</tr>
+<tr>
+<td>Local pickup</td>
+<td>Settings → Shipping and delivery → Local pickup</td>
+</tr>
+<tr>
+<td>Installation request</td>
+<td>Uses the Shopify contact form. Requests arrive at your store email with the product, the vehicle and the ZIP code. There is <strong>no appointment booking</strong> (Shopify Theme Store rules don't allow it)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-check-that-everything-works">5. Check that everything works</h2>
+<ol>
+<li>Open your store, click <strong>My garage</strong> and add a vehicle. The Year → Make → Model → Engine lists should fill in.</li>
+<li>On a part that fits: green "Fits your…" panel, and the vehicle's row highlighted in the fitment table.</li>
+<li>On a collection: "Shopping for…" bar and the "Only show parts that fit" toggle. With the Fitment filter, the counter reads "N parts fit your vehicle"; without it, "X of Y parts on this page fit".</li>
+<li>Add a part to the cart: the drawer opens, and the line shows "Vehicle: …" and the fitment badge.</li>
+</ol>
+<p><strong>If the garage is empty:</strong> the definition type is not <code>vehicle</code>, Storefronts access is off, or no entry is active.
+<strong>If every badge says "Check fitment":</strong> the metafield is not <code>custom.fitment</code>, or it is not a list of references to Vehicle.
+<strong>If the toggle only sorts the current page:</strong> the Fitment filter is missing in Search &amp; Discovery, or no product in the collection has fitment data.</p>
+<h2 id="known-limits">Known limits</h2>
+<ul>
+<li>Without the Search &amp; Discovery Fitment filter, "Only show parts that fit" only applies to the page being shown.</li>
+<li>At most 128 vehicles per product (Shopify limit): use ranges of years.</li>
+<li>The garage is saved in the shopper's browser, not in their customer account.</li>
+</ul>
+<h2 id="cinematic-tour">Cinematic tour</h2>
+<p>The section shows one photo; while visitors scroll, a camera moves through your blocks, in order.</p>
+<ul>
+<li><strong>Scene</strong>: shows the whole photo. Use one to open the tour, one "Parts map" (a bubble for every part) and one to close with a button. Nothing to position.</li>
+<li><strong>Part</strong>: one point of the photo (the wheels, a mirror…). The camera zooms on it while visitors scroll, and a bubble with its name appears on the parts map.</li>
+<li><strong>Blurred area</strong>: hides a licence plate, a logo or a face.</li>
+</ul>
+<p>To position a part, select it: the preview shows the whole photo with a target. Move the "Horizontal position" and "Vertical position" sliders until the target is on the part. The dashed frame shows what the zoom will show.</p>
+<p>When you change the photo, set its focal point on the car (scenes are framed on it), then select each part to check its target.</p>
+<h2 id="animations">Animations</h2>
+<p>Theme settings → <strong>Animations</strong> → "Text reveals and image parallax" (on by default): headings rise word by word, blocks fade in while scrolling, large images drift slower than the page and the hero figures count up. Turn it off for a static store. Visitors whose device asks for reduced motion never see these effects.</p>
+<h2 id="colors-and-accessibility-wcag-2-1-aa">Colors and accessibility (WCAG 2.1 AA)</h2>
+<p>The four styles (Grand Tourer, Showroom, Superbike, Trail) meet WCAG 2.1 AA contrast. If you change colors, the theme keeps text readable on its own: text in the accent color is darkened or lightened when it would fall below 4.5:1, form field borders and button edges stay at 3:1 or more, and fitment status colors adapt to light and dark backgrounds. Two checks remain yours: the button text color (Colors → Accent text) must contrast with the accent color, and text placed over your own photos needs a dark enough overlay.</p>
+</main>
+<footer><div class="bar"><span>Paddock theme for Shopify · Documentation</span><a href="support.html">Contact support</a></div></footer>
+<script src="site.js" defer></script>
+</body>
+</html>

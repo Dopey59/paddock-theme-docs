@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Offline tool: nothing is ever sent anywhere. The policy below blocks every network request. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>Paddock fitment converter</title>
+<style>
+  :root {
+    --bg: #f6f6f4; --surface: #fff; --text: #1d1d1b; --muted: #5a5a55; --line: #c9c9c3;
+    --accent: #1f4fd1; --accent-text: #fff; --error: #b42318; --error-bg: #fdecea;
+    --warn: #7a4a00; --warn-bg: #fff4dc; --ok: #137a3d; --ok-bg: #e3f4e8; --focus: #1f4fd1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151514; --surface: #1f1f1d; --text: #f1f1ec; --muted: #b5b5ad; --line: #55554f;
+      --accent: #8fb0ff; --accent-text: #0e1a3a; --error: #ffb4ab; --error-bg: #3b1512;
+      --warn: #ffd88a; --warn-bg: #3a2a08; --ok: #7fdca0; --ok-bg: #0f2e1b; --focus: #8fb0ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.2rem; margin: 0 0 8px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin: 16px 0; }
+  .step { display: inline-block; min-width: 1.6em; padding: 0 6px; margin-right: 6px; border-radius: 99px; background: var(--accent); color: var(--accent-text); text-align: center; font-weight: 700; }
+  .drop { display: block; border: 2px dashed var(--line); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; }
+  .drop.is-over { border-color: var(--accent); }
+  .drop input { display: block; margin: 12px auto 0; max-width: 100%; }
+  .drop strong { display: block; }
+  .file-name { margin-top: 8px; font-weight: 600; overflow-wrap: anywhere; }
+  button, .button { font: inherit; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-text); border-radius: 8px; padding: 8px 14px; cursor: pointer; text-decoration: none; display: inline-block; }
+  button.secondary { background: transparent; color: var(--accent); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .summary { padding: 12px 16px; border-radius: 8px; font-weight: 600; }
+  .summary--ok { background: var(--ok-bg); color: var(--ok); }
+  .summary--warn { background: var(--warn-bg); color: var(--warn); }
+  .summary--error { background: var(--error-bg); color: var(--error); }
+  ul.messages { padding-left: 1.2em; margin: 8px 0 16px; }
+  ul.messages li { margin: 4px 0; }
+  .messages--error li::marker { color: var(--error); }
+  .downloads { list-style: none; padding: 0; margin: 0; }
+  .downloads li { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--line); }
+  .downloads li:first-child { border-top: 0; }
+  .downloads p { margin: 0; flex: 1 1 320px; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; overflow-wrap: anywhere; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .table-wrap { overflow-x: auto; }
+  details summary { cursor: pointer; font-weight: 600; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Paddock fitment converter</h1>
+  <p>Turn your fitment sheet (one row per product and vehicle) into files you can import into Shopify. Everything happens in this browser window: <strong>your files never leave your computer</strong>, and this page works offline.</p>
+  <p><button type="button" class="secondary" id="download-template">Download the empty fitment sheet (CSV)</button></p>
+
+  <section class="card" aria-labelledby="step1">
+    <h2 id="step1"><span class="step">1</span>Your fitment sheet <span class="muted">(required)</span></h2>
+    <p class="muted">CSV file with the columns <code>product_handle</code> or <code>sku</code>, <code>make</code>, <code>model</code>, <code>year_from</code>, <code>year_to</code>, <code>engine</code>. Excel: File → Save as → CSV.</p>
+    <label class="drop" id="drop-sheet">
+      <strong>Drop the file here, or choose it:</strong>
+      <input type="file" id="file-sheet" accept=".csv,.txt,text/csv">
+      <span class="file-name" id="name-sheet" aria-live="polite"></span>
+    </label>
+  </section>
+
+  <section class="card" aria-labelledby="step2">
+    <h2 id="step2"><span class="step">2</span>Your Shopify product export <span class="muted">(optional)</span></h2>
+    <p class="muted">Shopify admin → Products → Export → "All products", "CSV for Excel, Numbers…". Needed only if your sheet uses SKUs instead of handles, or if you want the "tags" file (no app needed). It is also used to check that every handle exists.</p>
+    <label class="drop" id="drop-export">
+      <strong>Drop the export here, or choose it:</strong>
+      <input type="file" id="file-export" accept=".csv,text/csv">
+      <span class="file-name" id="name-export" aria-live="polite"></span>
+    </label>
+    <p><button type="button" class="secondary" id="clear-export" hidden>Remove the product export</button></p>
+  </section>
+
+  <section class="card" id="results" aria-labelledby="step3" hidden>
+    <h2 id="step3" tabindex="-1"><span class="step">3</span>Result</h2>
+    <div id="status" role="status" aria-live="polite"></div>
+    <div id="error-block" hidden>
+      <h3>Errors to fix</h3>
+      <p class="muted">Products with an error are left out of the files below until you fix your sheet and drop it again. Row numbers match the row numbers in your spreadsheet.</p>
+      <ul class="messages messages--error" id="errors"></ul>
+    </div>
+    <div id="warning-block" hidden>
+      <h3>Warnings</h3>
+      <p class="muted">The files are fine, but please check these points.</p>
+      <ul class="messages" id="warnings"></ul>
+    </div>
+    <div id="files-block" hidden>
+      <h3>Files to import</h3>
+      <ul class="downloads" id="files"></ul>
+    </div>
+    <details id="vehicles-block" hidden>
+      <summary>Vehicles found (<span id="vehicle-count"></span>)</summary>
+      <div class="table-wrap">
+        <table>
+          <caption class="muted" style="text-align:left">Each vehicle becomes one entry in Content → Metaobjects → Vehicle.</caption>
+          <thead><tr><th scope="col">Handle</th><th scope="col">Make</th><th scope="col">Model</th><th scope="col">Years</th><th scope="col">Engine</th><th scope="col">Products</th></tr></thead>
+          <tbody id="vehicles"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+</main>
+
+<script id="paddock-fitment-core">
+/* Conversion core. Pure functions, no DOM: docs/fitment-import/test/run-converter.mjs runs this same
+   script in Node to build docs/fitment-import/example-output/. */
+var PaddockFitment = (function () {
+  'use strict';
+  var MAX_VEHICLES_PER_PRODUCT = 128; // Shopify limit for a list.metaobject_reference metafield
+  var MAX_TAGS_PER_PRODUCT = 250;     // Shopify limit
+  var MAX_TAG_LENGTH = 255;           // Shopify limit
+  var METAOBJECT_TYPE = 'vehicle';
+  var METAFIELD = 'custom.fitment';
+  var NATIVE_FITMENT_COLUMN = 'Fitment (product.metafields.custom.fitment)'; // Shopify product CSV header
+  var TEMPLATE = 'product_handle,sku,make,model,year_from,year_to,engine\r\n';
+
+  /* ---------- CSV ---------- */
+  function detectDelimiter(text) {
+    var counts = { ',': 0, ';': 0, '\t': 0 };
+    var quoted = false;
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      if (c === '"') quoted = !quoted;
+      else if (!quoted && (c === '\n' || c === '\r')) break;
+      else if (!quoted && c in counts) counts[c]++;
+    }
+    var best = ',';
+    Object.keys(counts).forEach(function (d) { if (counts[d] > counts[best]) best = d; });
+    return best;
+  }
+  /** Returns rows of cells; each row also carries .line, the spreadsheet row number it starts on. */
+  function parseCSV(text, delimiter) {
+    text = String(text || '').replace(/^﻿/, '');
+    var d = delimiter || detectDelimiter(text);
+    var rows = [], row = [], cell = '', quoted = false, line = 1, rowLine = 1;
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      if (quoted) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { cell += '"'; i++; } else quoted = false;
+        } else {
+          if (c === '\n') line++;
+          cell += c;
+        }
+      } else if (c === '"') {
+        quoted = true;
+      } else if (c === d) {
+        row.push(cell); cell = '';
+      } else if (c === '\r' || c === '\n') {
+        if (c === '\r' && text[i + 1] === '\n') i++;
+        row.push(cell); cell = '';
+        row.line = rowLine; rows.push(row); row = [];
+        line++; rowLine = line;
+      } else {
+        cell += c;
+      }
+    }
+    if (cell !== '' || row.length) { row.push(cell); row.line = rowLine; rows.push(row); }
+    return rows;
+  }
+  function csvCell(v) {
+    v = v == null ? '' : String(v);
+    return /[",\r\n]|^\s|\s$/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+  function toCSV(rows) {
+    return rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n') + '\r\n';
+  }
+
+  /* ---------- Helpers ---------- */
+  function norm(s) {
+    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[\s_\-]+/g, ' ').trim();
+  }
+  function clean(s) { return String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); }
+  function slug(s) {
+    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+      .replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  var COLUMNS = {
+    handle: ['product handle', 'handle', 'product', 'url handle', 'poignee', 'handle produit'],
+    sku: ['sku', 'variant sku', 'product sku', 'reference', 'ref'],
+    make: ['make', 'vehicle make', 'marque', 'marque vehicule', 'manufacturer'],
+    model: ['model', 'vehicle model', 'modele', 'modele vehicule'],
+    year_from: ['year from', 'from year', 'start year', 'year start', 'from', 'annee debut', 'annee de debut', 'debut'],
+    year_to: ['year to', 'to year', 'end year', 'year end', 'to', 'annee fin', 'annee de fin', 'fin'],
+    engine: ['engine', 'motor', 'engine type', 'motorisation', 'moteur']
+  };
+  function mapHeader(header) {
+    var map = {};
+    header.forEach(function (h, i) {
+      var n = norm(h);
+      Object.keys(COLUMNS).forEach(function (key) {
+        if (map[key] == null && COLUMNS[key].indexOf(n) !== -1) map[key] = i;
+      });
+    });
+    return map;
+  }
+  function isUniversal(make) { return norm(make) === 'universal'; }
+  function yearLabel(from, to) {
+    if (to === '') return from + '–present';
+    return from === to ? String(from) : from + '–' + to;
+  }
+
+  /* ---------- Product export (Shopify or Matrixify) ---------- */
+  function readExport(text) {
+    var rows = parseCSV(text);
+    if (!rows.length) return { error: 'The product export is empty.' };
+    var header = rows[0].map(function (h) { return clean(h); });
+    var lower = header.map(function (h) { return h.toLowerCase(); });
+    var hi = lower.indexOf('handle'), si = lower.indexOf('variant sku'), ti = lower.indexOf('tags');
+    if (hi === -1) return { error: 'The product export has no "Handle" column. Export it from Shopify admin → Products → Export.' };
+    var handles = {}, skus = {}, order = [];
+    rows.slice(1).forEach(function (r) {
+      var h = clean(r[hi]);
+      if (!h) return;
+      if (!handles[h]) { handles[h] = { rows: [], tags: ti === -1 ? '' : String(r[ti] || '') }; order.push(h); }
+      handles[h].rows.push(r);
+      var sku = si === -1 ? '' : clean(r[si]);
+      if (sku) (skus[sku] = skus[sku] || []).indexOf(h) === -1 && skus[sku].push(h);
+    });
+    return { header: header, handles: handles, skus: skus, order: order, tagIndex: ti };
+  }
+
+  /* ---------- Main conversion ---------- */
+  /**
+   * @param {string} sheetText - the merchant's fitment sheet (CSV text)
+   * @param {string} [exportText] - optional Shopify (or Matrixify) product export (CSV text)
+   * @param {{currentYear?: number}} [options]
+   */
+  function convert(sheetText, exportText, options) {
+    options = options || {};
+    var maxYear = (options.currentYear || new Date().getFullYear()) + 2;
+    var errors = [], warnings = [];
+    var result = { errors: errors, warnings: warnings, files: [], vehicles: [], stats: { rows: 0, products: 0, skippedProducts: 0, vehicles: 0 } };
+    var exp = null;
+    if (exportText && String(exportText).trim()) {
+      exp = readExport(exportText);
+      if (exp.error) { errors.push({ row: null, message: exp.error }); exp = null; }
+    }
+
+    var rows = parseCSV(sheetText);
+    if (!rows.length || rows[0].every(function (c) { return !clean(c); })) {
+      errors.push({ row: null, message: 'The fitment sheet is empty. Start from the template: product_handle, sku, make, model, year_from, year_to, engine.' });
+      return result;
+    }
+    var col = mapHeader(rows[0]);
+    var missing = [];
+    if (col.handle == null && col.sku == null) missing.push('product_handle (or sku)');
+    ['make', 'model', 'year_from'].forEach(function (k) { if (col[k] == null) missing.push(k); });
+    if (missing.length) {
+      errors.push({ row: 1, message: 'Missing column' + (missing.length > 1 ? 's' : '') + ': ' + missing.join(', ') +
+        '. The first row must contain the column names. Found: ' + rows[0].map(clean).filter(Boolean).join(', ') + '.' });
+      return result;
+    }
+    var get = function (r, k) { return col[k] == null ? '' : clean(r[col[k]]); };
+
+    var products = {}, productOrder = [], badProducts = {}, vehicles = {}, spellings = { make: {}, model: {} };
+    function err(line, msg, product) {
+      errors.push({ row: line, message: msg });
+      if (product) badProducts[product] = true;
+    }
+    function parseYear(value, label, line, product) {
+      if (!/^\d{4}$/.test(value)) { err(line, label + ' "' + value + '" is not a year. Write four digits, for example 2017.', product); return null; }
+      var y = +value;
+      if (y < 1886 || y > maxYear) { err(line, label + ' ' + y + ' is out of range (1886 to ' + maxYear + ').', product); return null; }
+      return y;
+    }
+
+    rows.slice(1).forEach(function (r) {
+      var line = r.line;
+      if (r.every(function (c) { return !clean(c); })) return;
+      result.stats.rows++;
+      var handle = get(r, 'handle'), sku = get(r, 'sku');
+      var product = null;
+
+      if (handle) {
+        if (!/^[a-z0-9][a-z0-9_-]*$/.test(handle)) {
+          var suggestion = slug(handle);
+          err(line, 'Product handle "' + handle + '" is not a valid Shopify handle (lowercase letters, numbers and hyphens only)' +
+            (suggestion ? '. Did you mean "' + suggestion + '"? Copy it from the product page in Shopify admin (Search engine listing → URL handle).' : '.'));
+          return;
+        }
+        product = handle;
+        if (exp && !exp.handles[handle]) {
+          err(line, 'No product with the handle "' + handle + '" in your product export. Check the spelling.', product);
+        }
+      } else if (sku) {
+        if (!exp) {
+          err(line, 'Only a SKU ("' + sku + '") is given. Add your Shopify product export in step 2 so the converter can find the product, or fill in product_handle.');
+          return;
+        }
+        var found = exp.skus[sku];
+        if (!found) { err(line, 'No product with the SKU "' + sku + '" in your product export.'); return; }
+        if (found.length > 1) { err(line, 'The SKU "' + sku + '" is used by several products (' + found.join(', ') + '). Use product_handle on this row.'); return; }
+        product = found[0];
+      } else {
+        err(line, 'No product: fill in product_handle or sku.');
+        return;
+      }
+      if (!products[product]) { products[product] = { refs: [], seen: {} }; productOrder.push(product); }
+
+      var make = get(r, 'make'), model = get(r, 'model'), engine = get(r, 'engine');
+      var fromRaw = get(r, 'year_from'), toRaw = get(r, 'year_to');
+      var key, v;
+      if (!make) { err(line, 'Make is empty. Write the vehicle make (for example Audi), or Universal for a part that fits every vehicle.', product); return; }
+      if (isUniversal(make)) {
+        key = 'universal';
+        v = { make: 'Universal', model: 'All vehicles', from: 1900, to: '', engine: '' };
+      } else {
+        if (!model) { err(line, 'Model is empty for ' + make + '.', product); return; }
+        if (!fromRaw) { err(line, 'year_from is empty for ' + make + ' ' + model + '. Write the first model year, for example 2017.', product); return; }
+        var from = parseYear(fromRaw, 'year_from', line, product);
+        var to = toRaw ? parseYear(toRaw, 'year_to', line, product) : '';
+        if (from == null || to == null) return;
+        if (to !== '' && to < from) { err(line, 'year_to (' + to + ') is before year_from (' + from + ').', product); return; }
+        if (/[,|]/.test(make + model + engine)) {
+          warnings.push({ row: line, message: 'Avoid commas and "|" in make, model and engine ("' + [make, model, engine].filter(Boolean).join(' ') + '"): this row cannot become a fit: tag.' });
+        }
+        v = { make: make, model: model, from: from, to: to, engine: engine };
+        key = JSON.stringify([make, model, from, to, engine]);
+        [['make', norm(make), make], ['model', norm(make) + '\u0000' + norm(model), model]].forEach(function (p) {
+          var bucket = spellings[p[0]];
+          (bucket[p[1]] = bucket[p[1]] || {})[p[2]] = true;
+        });
+      }
+      var prod = products[product];
+      if (prod.seen[key]) {
+        warnings.push({ row: line, message: 'Duplicate: row ' + line + ' repeats row ' + prod.seen[key] + ' for ' + product + ' (' + describe(v) + '). Kept once.' });
+        return;
+      }
+      prod.seen[key] = line;
+      prod.refs.push(key);
+      if (!vehicles[key]) vehicles[key] = { key: key, v: v, products: {} };
+    });
+
+    // Spelling consistency: the theme compares makes and models exactly.
+    Object.keys(spellings.make).forEach(function (k) {
+      var forms = Object.keys(spellings.make[k]);
+      if (forms.length > 1) warnings.push({ row: null, message: 'The make is written in different ways: ' + forms.map(q).join(', ') + '. Shoppers will see them as different makes. Use one spelling everywhere.' });
+    });
+    Object.keys(spellings.model).forEach(function (k) {
+      var forms = Object.keys(spellings.model[k]);
+      if (forms.length > 1) warnings.push({ row: null, message: 'The model is written in different ways: ' + forms.map(q).join(', ') + '. Shoppers will see them as different models. Use one spelling everywhere.' });
+    });
+
+    // Products: skip any product with an error, enforce the Shopify limit.
+    var kept = [];
+    productOrder.forEach(function (p) {
+      var prod = products[p];
+      if (badProducts[p]) { result.stats.skippedProducts++; return; }
+      if (prod.refs.length > MAX_VEHICLES_PER_PRODUCT) {
+        errors.push({ row: null, message: p + ' has ' + prod.refs.length + ' vehicles; Shopify allows ' + MAX_VEHICLES_PER_PRODUCT +
+          ' per product. Merge consecutive years into ranges (for example one row 2010–2020 instead of 11 rows).' });
+        result.stats.skippedProducts++;
+        return;
+      }
+      if (prod.refs.indexOf('universal') !== -1 && prod.refs.length > 1) {
+        warnings.push({ row: null, message: p + ' is marked Universal and also lists specific vehicles. Universal wins: the part shows as fitting every vehicle.' });
+      }
+      kept.push(p);
+      prod.refs.forEach(function (k) { vehicles[k].products[p] = true; });
+    });
+
+    // Vehicle handles: stable and readable, e.g. audi-r8-2017-2023-v10.
+    var used = Object.keys(vehicles).filter(function (k) { return Object.keys(vehicles[k].products).length; }).map(function (k) { return vehicles[k]; });
+    used.sort(function (a, b) {
+      var x = a.v, y = b.v;
+      return cmp(x.make, y.make) || cmp(x.model, y.model) || (x.from - y.from) || ((x.to || 9999) - (y.to || 9999)) || cmp(x.engine, y.engine);
+    });
+    var taken = {};
+    used.forEach(function (veh) {
+      var v = veh.v, base;
+      if (veh.key === 'universal') base = 'universal';
+      else base = [v.make, v.model, v.to === '' ? v.from + '-present' : (v.from === v.to ? v.from : v.from + '-' + v.to), v.engine].filter(function (s) { return s !== ''; }).map(slug).filter(Boolean).join('-');
+      var h = base, n = 2;
+      while (taken[h]) h = base + '-' + n++;
+      taken[h] = true;
+      veh.handle = h;
+    });
+    var handleOf = {};
+    used.forEach(function (veh) { handleOf[veh.key] = veh.handle; });
+
+    result.vehicles = used.map(function (veh) {
+      return { handle: veh.handle, make: veh.v.make, model: veh.v.model, year_from: veh.v.from, year_to: veh.v.to, engine: veh.v.engine, products: Object.keys(veh.products).length };
+    });
+    result.stats.products = kept.length;
+    result.stats.vehicles = used.length;
+    if (!kept.length) return result;
+
+    // 1. Matrixify: vehicle entries (metaobjects).
+    // Matrixify reads one row per field ("Field" = field key, "Value"); rows of one entry share its handle.
+    var mo = [['Handle', 'Command', 'Definition: Handle', 'Status', 'Field', 'Value']];
+    result.vehicles.forEach(function (v) {
+      ['make', 'model', 'year_from', 'year_to', 'engine'].forEach(function (key) {
+        if (v[key] === '' || v[key] == null) return;
+        mo.push([v.handle, 'MERGE', METAOBJECT_TYPE, 'Active', key, v[key]]);
+      });
+    });
+    result.files.push({ name: 'matrixify-metaobjects-vehicles.csv', kind: 'matrixify', content: toCSV(mo),
+      description: 'Matrixify, import 1 of 2: creates or updates one Vehicle entry per row (matched by handle).' });
+
+    // 2. Matrixify: product metafield custom.fitment, references by "type.handle".
+    var pr = [['Handle', 'Command', 'Metafield: ' + METAFIELD + ' [list.metaobject_reference]']];
+    kept.forEach(function (p) {
+      pr.push([p, 'UPDATE', products[p].refs.map(function (k) { return METAOBJECT_TYPE + '.' + handleOf[k]; }).join(',')]);
+    });
+    result.files.push({ name: 'matrixify-products-fitment.csv', kind: 'matrixify', content: toCSV(pr),
+      description: 'Matrixify, import 2 of 2 (after the vehicles): sets the Fitment metafield of each product. It replaces the fitment already set on these products; other products are not touched.' });
+
+    // 3. Plain vehicle list (checklist, or for any other import tool).
+    var vl = [['handle', 'make', 'model', 'year_from', 'year_to', 'engine', 'products']];
+    result.vehicles.forEach(function (v) { vl.push([v.handle, v.make, v.model, v.year_from, v.year_to, v.engine, v.products]); });
+    result.files.push({ name: 'vehicles-list.csv', kind: 'list', content: toCSV(vl),
+      description: 'Plain list of the vehicles, with their handles. Useful as a checklist if you create vehicles by hand.' });
+
+    // 4. Native Shopify product CSV with fit: tags (needs the product export).
+    if (exp) {
+      if (exp.tagIndex === -1) {
+        warnings.push({ row: null, message: 'Your product export has no "Tags" column, so the tags file could not be made. Export again from Shopify admin → Products → Export.' });
+      } else {
+        var out = [exp.header];
+        var tagged = 0;
+        kept.forEach(function (p) {
+          var entry = exp.handles[p];
+          if (!entry) return;
+          var keep = entry.tags.split(',').map(clean).filter(function (t) { return t && t.slice(0, 4).toLowerCase() !== 'fit:'; });
+          var fit = [];
+          products[p].refs.forEach(function (k) {
+            var t = fitTag(vehicles[k].v);
+            if (t && fit.indexOf(t) === -1) fit.push(t);
+          });
+          if (keep.length + fit.length > MAX_TAGS_PER_PRODUCT) {
+            errors.push({ row: null, message: p + ' would have ' + (keep.length + fit.length) + ' tags; Shopify allows ' + MAX_TAGS_PER_PRODUCT + '. Left out of the tags file: use the Matrixify files for this product.' });
+            return;
+          }
+          entry.rows.forEach(function (r, i) {
+            var copy = r.slice();
+            while (copy.length < exp.header.length) copy.push('');
+            if (i === 0) copy[exp.tagIndex] = keep.concat(fit).join(', ');
+            out.push(copy);
+          });
+          tagged++;
+        });
+        if (tagged) {
+          result.files.push({ name: 'shopify-products-fit-tags.csv', kind: 'shopify', content: toCSV(out),
+            description: 'No app needed: Shopify product import with "Overwrite products with matching handles". Adds fit: tags to ' + tagged + ' product' + (tagged > 1 ? 's' : '') + ' and keeps their other tags. Badges and the product page use these tags; the garage list still needs the Vehicle entries.' });
+        }
+      }
+
+      // 5. Native Shopify product CSV that sets the Fitment metafield itself (tested on a dev store,
+      // November 2026): handles of the Vehicle entries, separated by "; ". With "Overwrite products
+      // with matching handles", only the columns of the file change; Shopify needs the title and
+      // the option columns of each product's first variant, taken from the export.
+      var lowerHeader = exp.header.map(function (h) { return h.toLowerCase(); });
+      var idx = function (name) { return lowerHeader.indexOf(name.toLowerCase()); };
+      var keepCols = ['Title', 'Option1 Name', 'Option1 Value', 'Option2 Name', 'Option2 Value', 'Option3 Name', 'Option3 Value']
+        .filter(function (c) { return idx(c) !== -1; });
+      if (idx('Title') === -1 || idx('Option1 Value') === -1) {
+        warnings.push({ row: null, message: 'Your product export has no "Title" or "Option1 Value" column, so the native Fitment file could not be made. Export again from Shopify admin → Products → Export.' });
+      } else {
+        var nat = [['Handle'].concat(keepCols, [NATIVE_FITMENT_COLUMN])];
+        kept.forEach(function (p) {
+          var entry = exp.handles[p];
+          if (!entry) return;
+          var first = entry.rows[0];
+          nat.push([p].concat(keepCols.map(function (c) { return clean(first[idx(c)]); }),
+            [products[p].refs.map(function (k) { return handleOf[k]; }).join('; ')]));
+        });
+        if (nat.length > 1) {
+          result.files.push({ name: 'shopify-products-fitment.csv', kind: 'shopify', content: toCSV(nat),
+            description: 'No app needed for this step: Shopify product import with "Overwrite products with matching handles" sets the Fitment field of ' + (nat.length - 1) + ' product' + (nat.length > 2 ? 's' : '') + '. Only the columns of this file change. Create the vehicles first (Matrixify file 1, or by hand with the handles of vehicles-list.csv).' });
+        }
+      }
+    }
+    return result;
+  }
+
+  function fitTag(v) {
+    if (v.make === 'Universal') return 'fit:Universal';
+    if (/[,|]/.test(v.make + v.model + v.engine)) return null;
+    var years = v.to === '' ? v.from + '-' : (v.from === v.to ? String(v.from) : v.from + '-' + v.to);
+    var t = 'fit:' + [v.make, v.model, years].concat(v.engine ? [v.engine] : []).join('|');
+    return t.length <= MAX_TAG_LENGTH ? t : null;
+  }
+  function describe(v) {
+    if (v.make === 'Universal') return 'Universal';
+    return v.make + ' ' + v.model + ' ' + yearLabel(v.from, v.to) + (v.engine ? ' ' + v.engine : '');
+  }
+  function q(s) { return '"' + s + '"'; }
+  function cmp(a, b) { return String(a).localeCompare(String(b), 'en', { sensitivity: 'base' }); }
+
+  return { convert: convert, parseCSV: parseCSV, toCSV: toCSV, slug: slug, fitTag: fitTag, yearLabel: yearLabel, TEMPLATE: TEMPLATE };
+})();
+if (typeof module !== 'undefined') module.exports = PaddockFitment;
+</script>
+
+<script>
+(function () {
+  'use strict';
+  if (typeof document === 'undefined') return;
+  var state = { sheet: null, sheetName: '', exportText: null, exportName: '' };
+  var $ = function (id) { return document.getElementById(id); };
+
+  // Excel often saves CSV as Windows-1252: fall back to it when the file is not valid UTF-8.
+  function readFile(file) {
+    return file.arrayBuffer().then(function (buf) {
+      try { return new TextDecoder('utf-8', { fatal: true }).decode(buf); }
+      catch (e) { return new TextDecoder('windows-1252').decode(buf); }
+    });
+  }
+  function download(name, content) {
+    var url = URL.createObjectURL(new Blob([content], { type: 'text/csv;charset=utf-8' }));
+    var a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+  function li(text) { var el = document.createElement('li'); el.textContent = text; return el; }
+  function msg(m) { return (m.row ? 'Row ' + m.row + ': ' : '') + m.message; }
+
+  function render() {
+    if (state.sheet == null) return;
+    var r = PaddockFitment.convert(state.sheet, state.exportText);
+    $('results').hidden = false;
+    var status = $('status');
+    var s = r.stats;
+    var text = s.rows + ' row' + (s.rows === 1 ? '' : 's') + ' read. ' + s.products + ' product' + (s.products === 1 ? '' : 's') +
+      ' and ' + s.vehicles + ' vehicle' + (s.vehicles === 1 ? '' : 's') + ' ready to import.';
+    if (r.errors.length) text += ' ' + r.errors.length + ' error' + (r.errors.length > 1 ? 's' : '') + ' to fix' + (s.skippedProducts ? ' (' + s.skippedProducts + ' product' + (s.skippedProducts > 1 ? 's' : '') + ' left out)' : '') + '.';
+    else if (r.warnings.length) text += ' ' + r.warnings.length + ' warning' + (r.warnings.length > 1 ? 's' : '') + '.';
+    status.className = 'summary summary--' + (r.errors.length ? 'error' : r.warnings.length ? 'warn' : 'ok');
+    status.textContent = text;
+
+    [['errors', r.errors], ['warnings', r.warnings]].forEach(function (pair) {
+      var list = $(pair[0]);
+      list.replaceChildren.apply(list, pair[1].map(function (m) { return li(msg(m)); }));
+      $(pair[0].replace(/s$/, '') + '-block').hidden = !pair[1].length;
+    });
+
+    var files = $('files');
+    files.replaceChildren();
+    r.files.forEach(function (f) {
+      var item = document.createElement('li');
+      var p = document.createElement('p');
+      var code = document.createElement('code');
+      code.textContent = f.name;
+      p.append(code, document.createElement('br'), document.createTextNode(f.description));
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = 'Download';
+      b.setAttribute('aria-label', 'Download ' + f.name);
+      b.addEventListener('click', function () { download(f.name, f.content); });
+      item.append(p, b);
+      files.append(item);
+    });
+    $('files-block').hidden = !r.files.length;
+
+    var tbody = $('vehicles');
+    tbody.replaceChildren();
+    r.vehicles.forEach(function (v) {
+      var tr = document.createElement('tr');
+      [v.handle, v.make, v.model, v.make === 'Universal' ? 'All' : PaddockFitment.yearLabel(v.year_from, v.year_to), v.engine || 'All engines', v.products].forEach(function (c) {
+        var td = document.createElement('td'); td.textContent = c; tr.append(td);
+      });
+      tbody.append(tr);
+    });
+    $('vehicle-count').textContent = r.vehicles.length;
+    $('vehicles-block').hidden = !r.vehicles.length;
+  }
+
+  function setup(kind, inputId, dropId, nameId) {
+    var input = $(inputId), drop = $(dropId);
+    function take(file) {
+      if (!file) return;
+      if (/\.(xlsx|xls|numbers|ods)$/i.test(file.name)) {
+        $(nameId).textContent = file.name + ': this is a spreadsheet file. Save it as CSV first (File → Save as → CSV), then drop the CSV.';
+        return;
+      }
+      readFile(file).then(function (text) {
+        if (kind === 'sheet') { state.sheet = text; state.sheetName = file.name; }
+        else { state.exportText = text; state.exportName = file.name; $('clear-export').hidden = false; }
+        $(nameId).textContent = file.name;
+        render();
+      });
+    }
+    input.addEventListener('change', function () { take(input.files[0]); });
+    ['dragenter', 'dragover'].forEach(function (t) {
+      drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add('is-over'); });
+    });
+    ['dragleave', 'drop'].forEach(function (t) {
+      drop.addEventListener(t, function () { drop.classList.remove('is-over'); });
+    });
+    drop.addEventListener('drop', function (e) { e.preventDefault(); take(e.dataTransfer.files[0]); });
+  }
+  setup('sheet', 'file-sheet', 'drop-sheet', 'name-sheet');
+  setup('export', 'file-export', 'drop-export', 'name-export');
+  $('clear-export').addEventListener('click', function () {
+    state.exportText = null; state.exportName = '';
+    $('file-export').value = ''; $('name-export').textContent = '';
+    $('clear-export').hidden = true;
+    render();
+  });
+  $('download-template').addEventListener('click', function () { download('paddock-fitment-sheet.csv', PaddockFitment.TEMPLATE); });
+})();
+</script>
+</body>
+</html>

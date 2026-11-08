@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sections and blocks · Paddock theme</title>
+<meta name="description" content="Paddock Shopify theme documentation: vehicle fitment, garage, import, sections, FAQ and support.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header><div class="bar"><a class="brand" href="index.html">PADDOCK<span>.</span></a><nav aria-label="Documentation"><ul><li><a href="index.html">Overview</a></li><li><a href="setup.html">Store setup</a></li><li><a href="import.html">Import fitment data</a></li><li><a href="sections.html" aria-current="page">Sections</a></li><li><a href="faq.html">FAQ</a></li><li><a href="support.html">Support</a></li><li><a href="changelog.html">Release notes</a></li></ul></nav></div></header>
+<main id="content">
+<h1>Sections and blocks</h1>
+<p>Every page is built from sections. In the theme editor, click <strong>Add section</strong> to add one, and drag sections to reorder them. This page lists the sections made for parts stores, then the general ones.</p>
+<h2 id="made-for-parts-stores">Made for parts stores</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Section</th>
+<th>What it does</th>
+<th>Tips</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Vehicle hero</strong></td>
+<td>Headline with a Year → Make → Model → Engine picker (and an optional part-number search). The chosen vehicle is saved in the shopper's garage</td>
+<td>Add up to three key figures (rating, cutoff hour, guarantee). Choose the collection that opens after a vehicle is picked</td>
+</tr>
+<tr>
+<td><strong>Cinematic tour</strong></td>
+<td>One photo of a car or bike; while visitors scroll, the camera zooms on each part and shows the products for it</td>
+<td>Use a landscape photo at least 2,400 px wide. See <a href="setup.html#cinematic-tour">Cinematic tour</a> in the setup guide</td>
+</tr>
+<tr>
+<td><strong>Shop the build</strong></td>
+<td>A build photo with numbered hotspots, the list of parts with install difficulty and time, and an "Add the full build" button</td>
+<td>The photo keeps its proportions so hotspots stay on the parts at every screen size</td>
+</tr>
+<tr>
+<td><strong>Category tiles</strong></td>
+<td>Collections as image tiles with their number of parts</td>
+<td>Leave the title and image empty to use the collection's own</td>
+</tr>
+<tr>
+<td><strong>Trust bar</strong></td>
+<td>Short reassurance items with icons (fitment guarantee, same-day shipping, returns)</td>
+<td>Four items read best</td>
+</tr>
+<tr>
+<td><strong>Scrolling text</strong></td>
+<td>A moving band of short messages</td>
+<td>Visitors can pause it</td>
+</tr>
+<tr>
+<td><strong>Before / after</strong></td>
+<td>Two photos with a slider, for example stock and modified</td>
+<td>Use two photos of the same size and framing</td>
+</tr>
+<tr>
+<td><strong>Key figures</strong></td>
+<td>Numbers that count up when they come into view</td>
+<td>Write values as you want them shown: 480,000, 98% or 4.8/5</td>
+</tr>
+<tr>
+<td><strong>Promo banner</strong></td>
+<td>A highlighted offer, for example a trade account, with bullet points and buttons</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="general-sections">General sections</h2>
+<p>Image banner, Image with text, Slideshow, Multicolumn, Rich text, Video, Featured collection, Featured product, Blog posts, Testimonials, Logo list, FAQ / collapsible content, Email sign-up and Custom Liquid.</p>
+<p><strong>Frames:</strong> the Vehicle hero, Image banner, Image with text, Slideshow, Video, Before / after and Shop the build sections can use a <strong>Rounded</strong> or <strong>Notched</strong> frame. The notched frame is a rounded panel with cut-outs for a tab (text or logo), a caption and a "Scroll to discover" cue.</p>
+<h2 id="product-page-blocks">Product page blocks</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Block</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fitment check</td>
+<td>"Fits your…", "Doesn't fit your…" or "Check fitment", with a link to change vehicle</td>
+</tr>
+<tr>
+<td>Fitment table</td>
+<td>Every vehicle the part fits, with a search box when the list is long. The shopper's vehicle is highlighted</td>
+</tr>
+<tr>
+<td>Install difficulty and time</td>
+<td>A 1-to-5 meter and the time, from the <code>custom.install_difficulty</code> and <code>custom.install_time</code> metafields</td>
+</tr>
+<tr>
+<td>Installation request</td>
+<td>A short form sent through the Shopify contact form, with the product, the vehicle and the ZIP code</td>
+</tr>
+<tr>
+<td>Same-day shipping countdown</td>
+<td>"Order within 2 h 14 min, ships today". Turn it on in Theme settings → Shipping only if it is true</td>
+</tr>
+<tr>
+<td>Inventory status</td>
+<td>In stock, "Only N left" below the threshold you set, or available on backorder</td>
+</tr>
+<tr>
+<td>Volume pricing</td>
+<td>Price breaks from Shopify B2B catalogs</td>
+</tr>
+<tr>
+<td>Price, Variant picker, Buy buttons, SKU, Brand, Description, Collapsible tab, Pickup availability, Pay in installments, Guarantees</td>
+<td>The usual product information</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Star ratings</strong> show on product cards and under the product title when a review app fills Shopify's standard product rating metafields (<code>reviews.rating</code> and <code>reviews.rating_count</code>). No setting is needed.</p>
+<p><strong>Complete the job:</strong> the product recommendations section can show complementary parts as a kit with an "Add selected" button. Choose the complementary products in the free Search &amp; Discovery app.</p>
+</main>
+<footer><div class="bar"><span>Paddock theme for Shopify · Documentation</span><a href="support.html">Contact support</a></div></footer>
+<script src="site.js" defer></script>
+</body>
+</html>

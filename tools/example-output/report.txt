@@ -1,0 +1,6 @@
+Rows read: 17
+Products ready: 8 (left out: 0)
+Vehicles: 13
+Errors: 0
+Warnings: 0
+Files: matrixify-metaobjects-vehicles.csv, matrixify-products-fitment.csv, vehicles-list.csv, shopify-products-fit-tags.csv, shopify-products-fitment.csv

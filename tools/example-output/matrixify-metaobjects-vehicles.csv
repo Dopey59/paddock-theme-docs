@@ -1,0 +1,53 @@
+Handle,Command,Definition: Handle,Status,Field,Value
+audi-r8-2007-2015-4-2-v8,MERGE,vehicle,Active,make,Audi
+audi-r8-2007-2015-4-2-v8,MERGE,vehicle,Active,model,R8
+audi-r8-2007-2015-4-2-v8,MERGE,vehicle,Active,year_from,2007
+audi-r8-2007-2015-4-2-v8,MERGE,vehicle,Active,year_to,2015
+audi-r8-2007-2015-4-2-v8,MERGE,vehicle,Active,engine,4.2 V8
+audi-r8-2016-2023-5-2-v10,MERGE,vehicle,Active,make,Audi
+audi-r8-2016-2023-5-2-v10,MERGE,vehicle,Active,model,R8
+audi-r8-2016-2023-5-2-v10,MERGE,vehicle,Active,year_from,2016
+audi-r8-2016-2023-5-2-v10,MERGE,vehicle,Active,year_to,2023
+audi-r8-2016-2023-5-2-v10,MERGE,vehicle,Active,engine,5.2 V10
+ford-mustang-2015-2017-5-0-v8,MERGE,vehicle,Active,make,Ford
+ford-mustang-2015-2017-5-0-v8,MERGE,vehicle,Active,model,Mustang
+ford-mustang-2015-2017-5-0-v8,MERGE,vehicle,Active,year_from,2015
+ford-mustang-2015-2017-5-0-v8,MERGE,vehicle,Active,year_to,2017
+ford-mustang-2015-2017-5-0-v8,MERGE,vehicle,Active,engine,5.0 V8
+ford-mustang-2018-present-5-0-v8,MERGE,vehicle,Active,make,Ford
+ford-mustang-2018-present-5-0-v8,MERGE,vehicle,Active,model,Mustang
+ford-mustang-2018-present-5-0-v8,MERGE,vehicle,Active,year_from,2018
+ford-mustang-2018-present-5-0-v8,MERGE,vehicle,Active,engine,5.0 V8
+honda-cbr600rr-2007,MERGE,vehicle,Active,make,Honda
+honda-cbr600rr-2007,MERGE,vehicle,Active,model,CBR600RR
+honda-cbr600rr-2007,MERGE,vehicle,Active,year_from,2007
+honda-cbr600rr-2007,MERGE,vehicle,Active,year_to,2007
+kawasaki-z650-2017-present,MERGE,vehicle,Active,make,Kawasaki
+kawasaki-z650-2017-present,MERGE,vehicle,Active,model,Z650
+kawasaki-z650-2017-present,MERGE,vehicle,Active,year_from,2017
+lamborghini-huracan-2014-2024,MERGE,vehicle,Active,make,Lamborghini
+lamborghini-huracan-2014-2024,MERGE,vehicle,Active,model,Huracán
+lamborghini-huracan-2014-2024,MERGE,vehicle,Active,year_from,2014
+lamborghini-huracan-2014-2024,MERGE,vehicle,Active,year_to,2024
+universal,MERGE,vehicle,Active,make,Universal
+universal,MERGE,vehicle,Active,model,All vehicles
+universal,MERGE,vehicle,Active,year_from,1900
+volkswagen-golf-gti-2013-2020,MERGE,vehicle,Active,make,Volkswagen
+volkswagen-golf-gti-2013-2020,MERGE,vehicle,Active,model,Golf GTI
+volkswagen-golf-gti-2013-2020,MERGE,vehicle,Active,year_from,2013
+volkswagen-golf-gti-2013-2020,MERGE,vehicle,Active,year_to,2020
+volkswagen-golf-r-2014-2021-2-0-tsi,MERGE,vehicle,Active,make,Volkswagen
+volkswagen-golf-r-2014-2021-2-0-tsi,MERGE,vehicle,Active,model,Golf R
+volkswagen-golf-r-2014-2021-2-0-tsi,MERGE,vehicle,Active,year_from,2014
+volkswagen-golf-r-2014-2021-2-0-tsi,MERGE,vehicle,Active,year_to,2021
+volkswagen-golf-r-2014-2021-2-0-tsi,MERGE,vehicle,Active,engine,2.0 TSI
+yamaha-mt-07-2014-2024,MERGE,vehicle,Active,make,Yamaha
+yamaha-mt-07-2014-2024,MERGE,vehicle,Active,model,MT-07
+yamaha-mt-07-2014-2024,MERGE,vehicle,Active,year_from,2014
+yamaha-mt-07-2014-2024,MERGE,vehicle,Active,year_to,2024
+yamaha-mt-09-2014-present,MERGE,vehicle,Active,make,Yamaha
+yamaha-mt-09-2014-present,MERGE,vehicle,Active,model,MT-09
+yamaha-mt-09-2014-present,MERGE,vehicle,Active,year_from,2014
+yamaha-tracer-7-2016-present,MERGE,vehicle,Active,make,Yamaha
+yamaha-tracer-7-2016-present,MERGE,vehicle,Active,model,Tracer 7
+yamaha-tracer-7-2016-present,MERGE,vehicle,Active,year_from,2016
