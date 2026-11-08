@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Import your fitment data into Paddock · Paddock theme</title>
-<meta name="description" content="Paddock Shopify theme documentation: vehicle fitment, garage, import, sections, FAQ and support.">
+<title>Import your fitment data into Chicane · Chicane theme</title>
+<meta name="description" content="Chicane Shopify theme documentation: vehicle fitment, garage, import, sections, FAQ and support.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
-<header><div class="bar"><a class="brand" href="index.html">PADDOCK<span>.</span></a><nav aria-label="Documentation"><ul><li><a href="index.html">Overview</a></li><li><a href="setup.html">Store setup</a></li><li><a href="import.html" aria-current="page">Import fitment data</a></li><li><a href="sections.html">Sections</a></li><li><a href="faq.html">FAQ</a></li><li><a href="support.html">Support</a></li><li><a href="changelog.html">Release notes</a></li></ul></nav></div></header>
+<header><div class="bar"><a class="brand" href="index.html">CHICANE<span>.</span></a><nav aria-label="Documentation"><ul><li><a href="index.html">Overview</a></li><li><a href="setup.html">Store setup</a></li><li><a href="import.html" aria-current="page">Import fitment data</a></li><li><a href="sections.html">Sections</a></li><li><a href="faq.html">FAQ</a></li><li><a href="support.html">Support</a></li><li><a href="changelog.html">Release notes</a></li></ul></nav></div></header>
 <main id="content">
-<h1>Import your fitment data into Paddock</h1>
-<p>You already have your fitment data: a spreadsheet, a TecDoc export or an ACES file. This guide shows how to load it into Paddock <strong>without a developer</strong>, in three steps:</p>
+<h1>Import your fitment data into Chicane</h1>
+<p>You already have your fitment data: a spreadsheet, a TecDoc export or an ACES file. This guide shows how to load it into Chicane <strong>without a developer</strong>, in three steps:</p>
 <ol>
 <li>Put your data into one simple spreadsheet, the <strong>fitment sheet</strong>.</li>
 <li>Open <strong><a href="tools/converter.html"><code>converter.html</code></a></strong> in your browser and drop the sheet. It checks every row and makes the import files.</li>
@@ -200,7 +200,7 @@ all-weather-floor-mats,,Universal,,,,
 </table></div>
 <p>The KType ID itself is not needed. Several KTypes often share make, model, years and engine: they become one row (the converter removes duplicates). TecDoc data is licensed by TecAlliance: check that your licence lets you display it in your store.</p>
 <h2 id="coming-from-aces-pies-north-america">Coming from ACES / PIES (North America)</h2>
-<p>ACES (Auto Care Association) describes fitment; PIES describes the product (part number, brand, descriptions, prices). For Paddock, only ACES fitment matters; PIES goes into your normal Shopify product import.</p>
+<p>ACES (Auto Care Association) describes fitment; PIES describes the product (part number, brand, descriptions, prices). For Chicane, only ACES fitment matters; PIES goes into your normal Shopify product import.</p>
 <p>ACES XML files use VCdb IDs (BaseVehicle, Make, Model, EngineBase). Ask your PIM, catalog provider or ACES tool for a <strong>flat export with names</strong> (often called "application export" or "ACES flat file"), then map:</p>
 <div class="table"><table>
 <thead>
@@ -239,7 +239,7 @@ all-weather-floor-mats,,Universal,,,,
 </tbody>
 </table></div>
 <p>Positions, quantities and notes (front/rear, "with sport package"…) have no column: put them in the product description or as product options.</p>
-<p>A full ACES catalog (tens of thousands of base vehicles) is better served by a dedicated fitment app; Paddock's garage handles several thousand vehicles comfortably.</p>
+<p>A full ACES catalog (tens of thousands of base vehicles) is better served by a dedicated fitment app; Chicane's garage handles several thousand vehicles comfortably.</p>
 <h2 id="what-shopify-imports-natively-research-november-2026">What Shopify imports natively (research, November 2026)</h2>
 <div class="table"><table>
 <thead>
@@ -279,7 +279,7 @@ all-weather-floor-mats,,Universal,,,,
 - The admin has <strong>no Import button</strong> for metaobject entries (Content → Metaobjects → Vehicle offers only "Add entry" and "Manage definition"): vehicles must be created by hand or with an app such as Matrixify.
 - Matrixify (Demo plan) imported <code>matrixify-metaobjects-vehicles.csv</code> (2 new Vehicle entries, all fields set, status Active), then <code>matrixify-products-fitment.csv</code> (product updated, Fitment set to both vehicles, vendor and tags kept). The files were sent with Matrixify's "Upload from URL" (merchants usually drop the file in the import box instead).</p>
 </main>
-<footer><div class="bar"><span>Paddock theme for Shopify · Documentation</span><a href="support.html">Contact support</a></div></footer>
+<footer><div class="bar"><span>Chicane theme for Shopify · Documentation</span><a href="support.html">Contact support</a></div></footer>
 <script src="site.js" defer></script>
 </body>
 </html>
